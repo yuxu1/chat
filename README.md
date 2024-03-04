@@ -4,6 +4,7 @@ Technologies:
 - React Native
 - Expo (development)
 - Gifted Chat (React Native library)
+- Android Studio/Android Emulator (testing)
 - Google Firestore Database (message storage)
 - Google Firebase authentication
 - Firebase Cloud Storage (image storage)
