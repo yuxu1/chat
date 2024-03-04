@@ -63,7 +63,7 @@ const Chat = ({ route, navigation }) => {
   //return chat interface using Gifted Chat's own GiftedChat component
   return (
     <View style={[styles.container, {backgroundColor: bgColor}]}>
-      <GiftedChat styles={styles.chatInterface}
+      <GiftedChat
         messages = {messages}
         renderBubble = {renderBubble}
         onSend = {messages => onSend(messages)}

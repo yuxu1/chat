@@ -30,6 +30,8 @@ const Start = ({ navigation }) => {
       <View style={styles.box}>
         {/* user name input (to be displayed when enter chatroom) */}
         <TextInput
+          accessible={true}
+          accesibilityLabel = 'Enter your name'
           style={styles.textInput}
           value={name}
           onChangeText={setName}
@@ -44,6 +46,9 @@ const Start = ({ navigation }) => {
         <View style={styles.backgroundColorOptions}>
           {colors.map((color, index) => (
             <TouchableOpacity
+              accessible={true}
+              accessibilityLabel = 'select a background color for chatroom'
+              accessibilityRole = 'button'
               key={index}
               /*set each button's color to corresponding color in colors array
               change styling to reflect selection status if button color matches bgColor(when user presses it)*/
@@ -56,9 +61,12 @@ const Start = ({ navigation }) => {
             />
           ))}
         </View>
-        
+
         {/* button to navigate to Chat screen */}
         <TouchableOpacity
+          accessible = {true}
+          accessibilityLabel = 'enter chatroom'
+          accessibilityRole = 'button'
           style={styles.startChatButton}
           onPress={() =>
             navigation.navigate('Chat', { name: name, bgColor: bgColor })
