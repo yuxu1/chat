@@ -6,15 +6,37 @@ import {
   TextInput,
   ImageBackground,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 
 import { useState } from 'react';
+import { getAuth, signInAnonymously } from 'firebase/auth';
+
+//prevent message warning against upcoming deprecation of packager
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
   const [bgColor, setBgColor] = useState('');
   const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
+
+  //initialize Firebase authentication handler
+  const auth = getAuth();
+
+  //function to  authenticate user anonymously before entering chatroom
+  const signInUser = () => {
+    signInAnonymously(auth)
+    //if user is logged in,navigate to Chat screen passing route paramters: user's ID, name, & selected background color
+      .then(result => {
+        navigation.navigate('Chat', {id: result.user.uid, name: name, bgColor: bgColor});
+        Alert.alert('Signed in Successfully!');
+      })
+      .catch((error) => {
+        Alert.alert('Unable to sign in, try later again.');
+      })
+  }
 
   return (
     //background image
@@ -68,9 +90,7 @@ const Start = ({ navigation }) => {
           accessibilityLabel = 'enter chatroom'
           accessibilityRole = 'button'
           style={styles.startChatButton}
-          onPress={() =>
-            navigation.navigate('Chat', { name: name, bgColor: bgColor })
-          }
+          onPress={signInUser}
         >
           <Text style={styles.buttonInnerText}>Start Chatting</Text>
         </TouchableOpacity>
