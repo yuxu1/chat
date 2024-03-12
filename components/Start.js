@@ -30,7 +30,7 @@ const Start = ({ navigation }) => {
     signInAnonymously(auth)
     //if user is logged in,navigate to Chat screen passing route paramters: user's ID, name, & selected background color
       .then(result => {
-        navigation.navigate('Chat', {id: result.user.uid, name: name, bgColor: bgColor});
+        navigation.navigate('Chat', {userID: result.user.uid, name: name, bgColor: bgColor});
         Alert.alert('Signed in Successfully!');
       })
       .catch((error) => {

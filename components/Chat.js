@@ -1,14 +1,16 @@
-import { StyleSheet, View, Text, KeyboardAvoidingView, Platform} from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform} from 'react-native';
 import { useEffect, useState } from 'react';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
-import { collection, getDocs, addDoc, onSnapshot, query, orderBy} from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, orderBy} from 'firebase/firestore';
 //import AsyncStorage to cache message data (local storage)
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView from 'react-native-maps';
 
-const Chat = ({ db, route, navigation, isConnected }) => {
+import CustomActions from './CustomActions';
+
+const Chat = ({ db, route, navigation, isConnected, storage }) => {
   //extract user-inputted name and selected background color from parameters (from Start screen)
-  const { id, name, bgColor } = route.params;
-
+  const { userID, name, bgColor } = route.params;
   const [messages, setMessages] = useState([]);
 
   let unsubMessages;
@@ -91,11 +93,43 @@ const Chat = ({ db, route, navigation, isConnected }) => {
 
   //override Gifted Chat's InputToobar to only render if there is a connection
   const renderInputToolbar = (props) => {
-    if (isConnected) {
+    if (isConnected === true) {
       return <InputToolbar {...props} />;
     } else {
       return null;
     }
+  };
+
+  /*
+  creates the circle "action" button in InputField
+  allow users to pick an image, take a photo, or share their location
+  */
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} userID={userID} {...props} />;
+  };
+
+  //render a MapView only if the currentMessage contains location data
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{
+            width: 150,
+            height: 100,
+            borderRadius: 13,
+            margin: 3
+          }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          }}
+        />
+      );
+    }
+    return null;
   };
 
   //return chat interface using Gifted Chat's own GiftedChat component
@@ -105,11 +139,13 @@ const Chat = ({ db, route, navigation, isConnected }) => {
         messages = {messages}
         renderBubble = {renderBubble}
         onSend = {messages => onSend(messages)}
+        renderInputToolbar = {renderInputToolbar}
+        renderActions = {renderCustomActions}
+        renderCustomView = {renderCustomView}
         user = {{
-          _id: id,
+          _id: userID,
           name: name
         }}
-        renderInputToolbar = {renderInputToolbar}
       />
       {/*
         fix Android issue of keyboard hiding message input field;
@@ -130,30 +166,3 @@ const styles = StyleSheet.create({
 });
 
 export default Chat;
-
-
-/* useEffect(() => {
-  setMessages([
-    {
-      _id: 2,
-      text: 'Welcome!',
-      createdAt: new Date(),
-      user: {
-       _id: 2,
-       name: 'React Native',
-       avatar: 'https://placeimg.com/140/140/any'
-      }
-    },
-    {
-      _id: 1,
-      text: `${name} has entered the chat`,
-      createdAt: new Date(),
-      system: true
-    }
-  ]);
-}, []); 
-
-  const onSend = (newMessages) => {
-    setMessages (previousMessages => GiftedChat.append(previousMessages, newMessages))
-  };
-  */

@@ -17,6 +17,9 @@ import { getFirestore, disableNetwork, enableNetwork } from 'firebase/firestore'
 //import NetInfo (to check connection status of user)
 import { useNetInfo }from '@react-native-community/netinfo';
 
+//import Firebase Storage Cloud
+import { getStorage } from 'firebase/storage';
+
 //dismiss warning message
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
@@ -24,6 +27,7 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
   //web app's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDLg8W_tORm_qo5WqcsPqqcOL0WROVtH6E",
@@ -39,6 +43,9 @@ const App = () => {
 
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app);
+
+  //Initialize handler to Firebase Storage
+  const storage = getStorage(app);
 
   //initialize state of user's connection status - check if user is online
   const connectionStatus = useNetInfo();
@@ -59,9 +66,14 @@ const App = () => {
       {/* contains screens that user can navigate betweem, starting with Start screen at initial loading */}
       <Stack.Navigator initialRouteName = 'Start'>
         <Stack.Screen name = 'Start' component = {Start}/>
-        {/* pass database object and up-to-date connection status to Chat component */}
+        {/* pass database object, up-to-date connection status, & Firestore storage handler to Chat component */}
         <Stack.Screen name = 'Chat'>
-          {props => <Chat isConnected={connectionStatus.isConnected} db={db} {...props}/>}
+          {props => <Chat
+            isConnected={connectionStatus.isConnected}
+            db={db}
+            storage={storage}
+            {...props}
+          />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
