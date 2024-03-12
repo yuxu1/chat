@@ -20,9 +20,12 @@ A chat app for mobile devices built using React Native. The app will provide use
 * **Google Firestore Database** (message storage)
 * **Google Firebase authentication**
 * **Firebase Cloud Storage** (remote image storage)
+* **AsyncStorage** (local storage system - cache)
+* **Expo ImagePicker API** (for accessing device's media library and uploading images)
+* **Expo Location API** (for accessing device's geolocation)
+* **react-native-maps** (Expo's recommended package for displaying location data on a map)
 
 ## Set Up:
-
 * Clone repository
 * Navigate to the root project folder in terminal and run ```npm install``` to install dependencies
 * Set up Firestore Database for project
