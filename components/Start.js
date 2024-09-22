@@ -53,7 +53,7 @@ const Start = ({ navigation }) => {
         {/* user name input (to be displayed when enter chatroom) */}
         <TextInput
           accessible={true}
-          accesibilityLabel = 'Enter your name'
+          accessibilityLabel = 'Enter your name'
           style={styles.textInput}
           value={name}
           onChangeText={setName}
